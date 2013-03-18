@@ -395,8 +395,7 @@ void GameStateLoad::logic() {
 
 	if (!confirm->visible) {
 		if (button_exit->checkClick()) {
-			delete requestedGameState;
-			requestedGameState = new GameStateTitle();
+			stateHandler->popState();
 		}
 
 		if (loading_requested) {
@@ -408,9 +407,10 @@ void GameStateLoad::logic() {
 		if (button_action->checkClick()) {
 			if (stats[selected_slot].name == "") {
 				// create a new game
+				stateHandler->popState(); // Don't leave new char screen in state history
 				GameStateNew* newgame = new GameStateNew();
 				newgame->game_slot = selected_slot + 1;
-				requestedGameState = newgame;
+				stateHandler->pushState(newgame);
 			}
 			else {
 				loading_requested = true;
@@ -454,6 +454,9 @@ void GameStateLoad::logic() {
 			confirm->confirmClicked = false;
 		}
 	}
+
+	loaded = false;
+	loading = false;
 }
 
 void GameStateLoad::logicLoading() {
@@ -462,9 +465,9 @@ void GameStateLoad::logicLoading() {
 	play->resetGame();
 	play->game_slot = selected_slot + 1;
 	play->loadGame();
-	requestedGameState = play;
 	loaded = true;
 	loading = false;
+	stateHandler->pushState(play);
 }
 
 void GameStateLoad::updateButtons() {

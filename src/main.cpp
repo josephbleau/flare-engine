@@ -150,7 +150,7 @@ static void mainLoop (bool debug_event) {
 		// black out
 		SDL_FillRect(screen, NULL, 0);
 
-		gswitch->render();
+        gswitch->render();
 
 		// Engine done means the user escapes the main game menu.
 		// Input done means the user closes the window.

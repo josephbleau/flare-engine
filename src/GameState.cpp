@@ -17,23 +17,22 @@ FLARE.  If not, see http://www.gnu.org/licenses/
 
 #include "GameState.h"
 
+
+GameSwitcher* GameState::stateHandler = NULL;
+
 GameState::GameState() {
-
-	requestedGameState = NULL;
-
 	exitRequested = false;
 	hasMusic = false;
 	reload_music = false;
-}
-
-GameState* GameState::getRequestedGameState() {
-	return requestedGameState;
 }
 
 void GameState::logic() {
 }
 
 void GameState::render() {
+}
+
+void GameState::returnTo() {
 }
 
 GameState::~GameState() {

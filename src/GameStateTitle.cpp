@@ -82,11 +82,9 @@ void GameStateTitle::logic() {
 	snd->logic(Point(0,0));
 
 	if (button_play->checkClick()) {
-		delete requestedGameState;
-		requestedGameState = new GameStateLoad();
+		stateHandler->pushState(new GameStateLoad());
 	} else if (button_cfg->checkClick()) {
-		delete requestedGameState;
-		requestedGameState = new GameStateConfig();
+		stateHandler->pushState(new GameStateConfig());
 	} else if (button_exit->checkClick()) {
 		exitRequested = true;
 	}

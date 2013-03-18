@@ -40,6 +40,7 @@ FLARE.  If not, see http://www.gnu.org/licenses/
 using namespace std;
 
 GameSwitcher::GameSwitcher() {
+    GameState::stateHandler = this;
 
 	// The initial state is the title screen
 	currentState = new GameStateTitle();
@@ -66,21 +67,10 @@ void GameSwitcher::loadMusic() {
 }
 
 void GameSwitcher::logic() {
-	// Check if a the game state is to be changed and change it if necessary, deleting the old state
-	GameState* newState = currentState->getRequestedGameState();
-	if (newState != NULL) {
-		delete currentState;
-		currentState = newState;
-
-		// reload the fps meter position
-		loadFPS();
-
-		// if this game state does not provide music, use the title theme
-		if (!currentState->hasMusic)
-			if (!Mix_PlayingMusic())
-				if (music)
-					Mix_PlayMusic(music, -1);
-	}
+    if(deleteStates.size() > 0) {
+        delete deleteStates.back();
+        deleteStates.pop_back();
+    }
 
 	currentState->logic();
 
@@ -91,6 +81,7 @@ void GameSwitcher::logic() {
 		loadMusic();
 		currentState->reload_music = false;
 	}
+
 }
 
 void GameSwitcher::showFPS(int fps) {
@@ -140,6 +131,37 @@ void GameSwitcher::loadFPS() {
 
 void GameSwitcher::render() {
 	currentState->render();
+}
+
+void GameSwitcher::pushState(GameState* state) {
+    if(state) {
+        stateStack.push(currentState);
+        currentState = state;
+
+		// reload the fps meter position
+		loadFPS();
+
+		// if this game state does not provide music, use the title theme
+		if (!currentState->hasMusic)
+			if (!Mix_PlayingMusic())
+				if (music)
+					Mix_PlayMusic(music, -1);
+
+        currentState->logic();
+    }
+}
+
+void GameSwitcher::popState(int numStatesToPop) {
+    for(int i = 0; i < numStatesToPop; ++i) {
+        if(!stateStack.empty()) {
+            deleteStates.push_back(currentState);
+            currentState = stateStack.top();
+            currentState->returnTo();
+            stateStack.pop();
+        }
+    }
+
+    currentState->logic();
 }
 
 GameSwitcher::~GameSwitcher() {

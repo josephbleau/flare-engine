@@ -47,7 +47,7 @@ class WidgetTooltip;
 
 class GameStateConfig : public GameState {
 public:
-	GameStateConfig    ();
+	GameStateConfig    (bool fromInGame = false);
 	~GameStateConfig   ();
 
 	void    logic   ();
@@ -144,6 +144,7 @@ private:
 	WidgetTooltip       * tip;
 	TooltipData         tip_buf;
 
+    bool from_in_game;
 	int input_key;
 	int mods_total;
 	bool check_resolution;

@@ -25,6 +25,9 @@ FLARE.  If not, see http://www.gnu.org/licenses/
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 
+#include <list>
+#include <stack>
+
 #include "Utils.h"
 #include "WidgetLabel.h"
 
@@ -53,6 +56,8 @@ private:
 	Mix_Music *music;
 
 	GameState *currentState;
+	std::list<GameState *> deleteStates;
+    std::stack<GameState*> stateStack;
 
 	WidgetLabel *label_fps;
 	Point fps_position;
@@ -63,6 +68,9 @@ public:
 	GameSwitcher();
 	GameSwitcher(const GameSwitcher &copy); // not implemented.
 	~GameSwitcher();
+
+    void pushState(GameState* state);
+    void popState(int numStatesToPop = 1);
 
 	void loadMusic();
 	void loadFPS();

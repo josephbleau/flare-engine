@@ -19,6 +19,8 @@ FLARE.  If not, see http://www.gnu.org/licenses/
  * class MenuExit
  */
 
+#include "GameState.h"
+#include "GameStateConfig.h"
 #include "MenuExit.h"
 #include "SharedResources.h"
 #include "Settings.h"
@@ -28,7 +30,10 @@ MenuExit::MenuExit() : Menu() {
 	exitClicked = false;
 
 	buttonExit = new WidgetButton(mods->locate("images/menus/buttons/button_default.png"));
-	buttonExit->label = msg->get("Exit");
+	buttonExit->label = msg->get("Exit to Title");
+
+	buttonConfig = new WidgetButton(mods->locate("images/menus/buttons/button_default.png"));
+	buttonConfig->label = msg->get("Options");
 
 	buttonClose = new WidgetButton(mods->locate("images/menus/buttons/button_x.png"));
 
@@ -52,6 +57,10 @@ void MenuExit::update() {
 	buttonExit->pos.y = VIEW_H/2;
 	buttonExit->refresh();
 
+	buttonConfig->pos.x = VIEW_W_HALF - buttonConfig->pos.w/2;
+	buttonConfig->pos.y = VIEW_H/2 + buttonExit->pos.h;
+	buttonConfig->refresh();
+
 	buttonClose->pos.x = window_area.x + window_area.w;
 	buttonClose->pos.y = window_area.y;
 
@@ -60,6 +69,10 @@ void MenuExit::update() {
 
 void MenuExit::logic() {
 	if (visible) {
+        if(buttonConfig->checkClick()) {
+            GameState::stateHandler->pushState(new GameStateConfig(true));
+        }
+
 		if (buttonExit->checkClick()) {
 			exitClicked = true;
 		}
@@ -84,6 +97,7 @@ void MenuExit::render() {
 
 		buttonExit->render();
 		buttonClose->render();
+		buttonConfig->render();
 	}
 }
 

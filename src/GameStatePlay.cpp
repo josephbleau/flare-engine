@@ -62,8 +62,6 @@ using namespace std;
 const int MENU_ENEMY_TIMEOUT = MAX_FRAMES_PER_SEC * 10;
 
 
-
-
 GameStatePlay::GameStatePlay()
 	: GameState()
 	, enemy(NULL)
@@ -108,6 +106,7 @@ GameStatePlay::GameStatePlay()
 		SDL_FreeSurface(cleanup);
 	}
 
+
 	// load the config file for character titles
 	loadTitles();
 }
@@ -133,6 +132,15 @@ void GameStatePlay::resetGame() {
 	// Finalize new character settings
 	menu->talker->setHero(pc->stats.name, pc->stats.portrait);
 	pc->loadSounds();
+}
+
+void GameStatePlay::resetInterface() {
+    /* Someone who knows the codebase well
+       should write some code to reset the interface here. */
+}
+
+void GameStatePlay::returnTo() {
+    resetInterface();
 }
 
 /**
@@ -288,8 +296,7 @@ void GameStatePlay::checkTeleport() {
 				if(remove(filename.str().c_str()) != 0)
 					perror("Error deleting save from path");
 
-				delete requestedGameState;
-				requestedGameState = new GameStateTitle();
+				stateHandler->popState(2);
 			}
 			else {
 				saveGame();
@@ -314,8 +321,7 @@ void GameStatePlay::checkCancel() {
 	if (menu->requestingExit()) {
 		saveGame();
 		Mix_HaltMusic();
-		delete requestedGameState;
-		requestedGameState = new GameStateTitle();
+		stateHandler->popState(2);
 	}
 
 	// if user closes the window

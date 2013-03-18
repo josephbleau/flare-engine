@@ -43,7 +43,7 @@ FLARE.  If not, see http://www.gnu.org/licenses/
 
 using namespace std;
 
-GameStateConfig::GameStateConfig ()
+GameStateConfig::GameStateConfig (bool fromInGame)
 	: GameState()
 	, video_modes(NULL)
 	, child_widget()
@@ -52,6 +52,7 @@ GameStateConfig::GameStateConfig ()
 	, cancel_button(NULL)
 	, imgFileName(mods->locate("images/menus/config.png"))
 	, tip_buf()
+	, from_in_game(fromInGame)
 	, input_key(0)
 	, check_resolution(true)
 {
@@ -786,13 +787,17 @@ void GameStateConfig::logic ()
 		resolution_confirm_ticks--;
 		if (resolution_confirm->confirmClicked) {
 			saveSettings();
-			delete requestedGameState;
-			requestedGameState = new GameStateTitle();
+
+			stateHandler->popState();
+
+			if(!from_in_game) {
+                stateHandler->popState(); // Pop old title screen to force resolution change upates
+                stateHandler->pushState(new GameStateTitle());
+            }
 		} else if (resolution_confirm->cancelClicked || resolution_confirm_ticks == 0) {
 			applyVideoSettings(screen, old_view_w, old_view_h);
 			saveSettings();
-			delete requestedGameState;
-			requestedGameState = new GameStateConfig();
+			stateHandler->popState();
 		}
 	}
 
@@ -822,8 +827,7 @@ void GameStateConfig::logic ()
 				resolution_confirm_ticks = MAX_FRAMES_PER_SEC * 10; // 10 seconds
 			} else {
 				saveSettings();
-				delete requestedGameState;
-				requestedGameState = new GameStateTitle();
+				stateHandler->popState();
 			}
 		} else if (defaults_button->checkClick()) {
 			defaults_confirm->visible = true;
@@ -835,8 +839,7 @@ void GameStateConfig::logic ()
 			delete msg;
 			msg = new MessageEngine();
 			update();
-			delete requestedGameState;
-			requestedGameState = new GameStateTitle();
+			stateHandler->popState();
 		}
 	}
 

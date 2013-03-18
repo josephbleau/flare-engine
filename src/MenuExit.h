@@ -35,6 +35,7 @@ protected:
 	void loadGraphics();
 
 	WidgetButton *buttonExit;
+	WidgetButton *buttonConfig;
 	WidgetButton *buttonClose;
 	WidgetLabel label;
 

@@ -118,6 +118,8 @@ public:
 
 	void logic();
 	void render();
+	void resetInterface();
+	void returnTo();
 	void showFPS(int fps);
 	void saveGame();
 	void loadGame();

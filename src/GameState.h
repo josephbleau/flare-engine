@@ -24,6 +24,8 @@ FLARE.  If not, see http://www.gnu.org/licenses/
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 
+#include "GameSwitcher.h"
+
 class GameState {
 public:
 	GameState();
@@ -32,14 +34,14 @@ public:
 	virtual void logic();
 	virtual void render();
 
-	GameState* getRequestedGameState();
+	virtual void returnTo();
+
 	bool isExitRequested() { return exitRequested; }
 	bool hasMusic;
 	bool reload_music;
 
+    static GameSwitcher* stateHandler;
 protected:
-
-	GameState* requestedGameState;
 
 	bool exitRequested;
 };

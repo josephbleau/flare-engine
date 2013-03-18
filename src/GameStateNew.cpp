@@ -249,8 +249,7 @@ void GameStateNew::logic() {
 	}
 
 	if (button_exit->checkClick()) {
-		delete requestedGameState;
-		requestedGameState = new GameStateLoad();
+		stateHandler->popState();
 	}
 
 	if (button_create->checkClick()) {
@@ -265,7 +264,7 @@ void GameStateNew::logic() {
 		play->game_slot = game_slot;
 		play->resetGame();
 		play->loadClass(class_list->getSelected());
-		requestedGameState = play;
+		stateHandler->pushState(play);
 	}
 
 	// scroll through portrait options
